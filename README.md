@@ -4,16 +4,6 @@
 
 本仓库用于展示 Inkgram 面向 **电子墨水屏（E-Ink）** 场景的 Telegram 风格界面设计，包含设备仿真、刷新模式与残影效果等交互原型，便于评审视觉与体验，而非对接真实 Telegram 后端。
 
-## 项目定位
-
-| 说明 | 内容 |
-|------|------|
-| **性质** | UI / UX 设计 Demo |
-| **目标** | 验证 E-Ink 设备上的布局、对比度、刷新与残影观感 |
-| **非目标** | 登录、消息同步、网络 API、完整 Telegram 功能 |
-
-设计稿来源：[Figma — E-ink Telegram Client UI](https://www.figma.com/design/kZwgbkNLUk5cSAWTHcPr6t/E-ink-Telegram-Client-UI)
-
 ## 技术栈
 
 - React 18 + Vite 6
