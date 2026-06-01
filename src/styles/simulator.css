@@ -1,0 +1,420 @@
+/*
+ * E-Ink Simulator Device & Control Styles for React Application
+ * -----------------------------------------------------------
+ * Includes absolute aspect ratio mapping, asymmetrical handgrips, physical bezels,
+ * ghosting layers, flashing overlays, and responsive preview controls.
+ */
+
+:root {
+  /* 4-bit 灰阶调色盘 */
+  --eink-white: #FFFFFF;
+  --eink-light-gray: #F0F0F0;
+  --eink-silver: #D0D0D0;
+  --eink-medium-gray: #7F7F7F;
+  --eink-dark-gray: #3F3F3F;
+  --eink-black: #000000;
+
+  /* 主题色 - 极高对比度设计 */
+  --bg-primary: var(--eink-white);
+  --bg-secondary: var(--eink-light-gray);
+  --text-primary: var(--eink-black);
+  --text-secondary: var(--eink-dark-gray);
+  --border-color: var(--eink-black);
+  --accent-color: var(--eink-black);
+
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+}
+
+/* 墨水屏专有灰度仿真滤镜 */
+.filter-bitonal {
+  filter: contrast(500%) grayscale(100%);
+}
+
+.filter-4bit {
+  filter: contrast(120%) grayscale(100%);
+}
+
+/* 沙盒仿真画幅外层容器 */
+.sandbox-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background-color: #f3f4f6; /* 柔软的现代质感沙盒外部灰背景 */
+  padding: 24px;
+  gap: 32px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* 电子墨水屏物理机身 (极高逼真度 E-paper Bezel) */
+.eink-device {
+  background: #232526; /* 哑光墨黑塑料/阳极氧化铝触感 */
+  border-radius: 16px;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.6);
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid #111;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-sizing: border-box;
+}
+
+/* ----------------------------------------------------
+ * 设备尺寸与方向精准映射 (Exact Resolution Scaling on Screen Wrapper)
+ * ----------------------------------------------------
+ */
+
+/* 1. 1872 x 1404 平板外框与屏幕精确尺寸 (最大化呈现 10.3 寸显示区域) */
+.eink-device.device-tablet.orientation-portrait {
+  padding: 24px 20px 24px 48px; /* 左侧宽握持手柄 */
+}
+.eink-device.device-tablet.orientation-portrait .eink-screen-wrapper {
+  flex: none;
+  width: 540px;
+  height: 720px; /* 1404 x 1872 比例 (3:4) */
+}
+
+.eink-device.device-tablet.orientation-landscape {
+  padding: 48px 24px 20px 24px; /* 顶部宽握持手柄 */
+}
+.eink-device.device-tablet.orientation-landscape .eink-screen-wrapper {
+  flex: none;
+  width: 880px;
+  height: 660px; /* 1872 x 1404 比例 (4:3) */
+}
+
+/* 2. 1648 x 842 手机外框与屏幕精确尺寸 */
+.eink-device.device-phone.orientation-portrait {
+  padding: 24px 16px 36px 16px;
+  border-radius: 28px;
+}
+.eink-device.device-phone.orientation-portrait .eink-screen-wrapper {
+  flex: none;
+  width: 368px;
+  height: 720px; /* 842 x 1648 比例 (约 0.511) */
+  border-radius: 8px;
+}
+
+.eink-device.device-phone.orientation-landscape {
+  padding: 16px 24px 16px 36px;
+  border-radius: 28px;
+}
+.eink-device.device-phone.orientation-landscape .eink-screen-wrapper {
+  flex: none;
+  width: 880px;
+  height: 450px; /* 1648 x 842 比例 (约 1.957) */
+  border-radius: 8px;
+}
+
+/* 物理手柄握持区的虚拟笔槽 / 手感刻线 (Boox Stylus Dock Indicator) */
+.eink-device.device-tablet.orientation-portrait::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 30%;
+  bottom: 30%;
+  width: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  border-right: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.eink-device.device-tablet.orientation-landscape::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 30%;
+  right: 30%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+/* 物理手机底部 Home 圆点物理键印记 */
+.eink-device.device-phone.orientation-portrait::after {
+  content: '';
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px dashed #444;
+}
+
+.eink-device.device-phone.orientation-landscape::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px dashed #444;
+}
+
+/* 机身顶部的品牌标识/指示灯区 */
+.device-header {
+  height: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+.device-indicator {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #333;
+}
+
+/* 墨水屏专有闪烁绿色呼吸灯指示 */
+.eink-device.device-tablet .device-indicator {
+  box-shadow: 0 0 4px rgba(46, 204, 113, 0.5);
+  background: #2ecc71;
+}
+
+.device-brand {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #555;
+  text-transform: uppercase;
+}
+
+/* 屏幕显示区域 (纯平玻璃无边框设计) */
+.eink-screen-wrapper {
+  background-color: var(--eink-white);
+  border: none; /* 彻底去除屏幕边缘的内衬框线，形成纯平无界质感 */
+  box-shadow: none; /* 彻底去除凹陷内阴影，使画面无边界 */
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 仿真物理电子墨水屏本体 */
+.eink-screen {
+  flex: 1;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 屏幕反白刷新层（全屏刷新动画模拟） */
+.screen-flash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--eink-black);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes flash-refresh {
+  0% { opacity: 0; }
+  30% { opacity: 1; background: var(--eink-black); }
+  60% { opacity: 1; background: var(--eink-white); }
+  100% { opacity: 0; }
+}
+
+.eink-screen.refreshing .screen-flash {
+  animation: flash-refresh 380ms steps(4) forwards;
+}
+
+/* 物理返回键/翻页键 */
+.device-footer {
+  height: 20px;
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.hardware-btn {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: #888;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+  transition: all 0.1s;
+}
+
+.hardware-btn:active {
+  background: #151515;
+  color: #fff;
+}
+
+/* ----------------------------------------------------
+ * 物理残影 (Ghosting) 模拟层
+ * ----------------------------------------------------
+ */
+.ghost-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.08; /* 虚弱的残影 */
+  mix-blend-mode: multiply;
+  z-index: 999;
+  filter: grayscale(100%) contrast(150%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  transition: opacity 0.3s ease-out;
+}
+
+.ghost-layer * {
+  pointer-events: none !important;
+}
+
+/* ----------------------------------------------------
+ * 沙盒控制台面板样式 (Sandbox Dashboard)
+ * ----------------------------------------------------
+ */
+.control-panel {
+  width: 380px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid #e0e0e0;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.panel-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #222;
+  border-bottom: 2px solid #222;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title span {
+  font-size: 12px;
+  background: #000;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.control-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-label {
+  font-size: 12px;
+  font-weight: 750;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.panel-btn {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: 6px;
+  background: #f5f5f5;
+  border: 1px solid #dcdcdc;
+  font-size: 12px;
+  font-weight: 700;
+  color: #444;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.panel-btn:hover {
+  background: #eee;
+  border-color: #bbb;
+}
+
+.panel-btn.active {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.console-desc {
+  background: #fdf6e2;
+  border-left: 4px solid #f5b041;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #7d6608;
+  border-radius: 0 6px 6px 0;
+}
+
+.export-section textarea {
+  width: 100%;
+  height: 90px;
+  font-family: monospace;
+  font-size: 10px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fafafa;
+  resize: none;
+}
+
+.btn-eink-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: #000;
+  color: #fff;
+  border: 2px solid #000;
+  border-radius: 6px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.btn-eink-copy:active {
+  background: #fff;
+  color: #000;
+}
